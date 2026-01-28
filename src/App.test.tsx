@@ -73,12 +73,12 @@ describe('App', () => {
       loadConfig: mockLoadConfig,
     });
 
-    // 使用类型断言而不是 any
+    // 使用 unknown 类型断言处理 Mock 类型转换
     vi.mocked(downloadStore.useDownloadStore).mockImplementation(
-      mockUseDownloadStore as typeof downloadStore.useDownloadStore
+      mockUseDownloadStore as unknown as typeof downloadStore.useDownloadStore
     );
     vi.mocked(configStore.useConfigStore).mockImplementation(
-      mockUseConfigStore as typeof configStore.useConfigStore
+      mockUseConfigStore as unknown as typeof configStore.useConfigStore
     );
   });
 

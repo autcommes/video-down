@@ -15,6 +15,7 @@ const DEFAULT_CONFIG: AppConfig = {
   defaultResolution: '1080p',
   autoCheckUpdate: true,
   concurrentDownloads: 3,
+  youtubeCookieBrowser: 'none',
 };
 
 /**

@@ -17,7 +17,7 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css}\"",
     "test": "vitest --run",
     "test:watch": "vitest",
-    "test:all": "pnpm test && pnpm lint && cd src-tauri && cargo test --lib && cargo clippy --lib -- -D warnings",
+    "test:all": "pnpm test && pnpm lint && tsc --noEmit && cd src-tauri && cargo test --lib && cargo clippy --lib -- -D warnings",
     "setup:hooks": "simple-git-hooks",
     "release": "release-it",
     "release:minor": "release-it minor",
