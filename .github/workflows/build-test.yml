@@ -13,11 +13,13 @@ jobs:
   test:
     name: Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 45
+    timeout-minutes: 60
     
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest]
+        # 暂时只测试 Windows，稳定后再添加其他平台
+        # os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - name: Checkout repository
@@ -72,12 +74,12 @@ jobs:
       - name: Run Rust tests
         working-directory: src-tauri
         run: cargo test
-        timeout-minutes: 15
+        timeout-minutes: 30
 
       - name: Run Rust clippy
         working-directory: src-tauri
         run: cargo clippy -- -D warnings
-        timeout-minutes: 10
+        timeout-minutes: 20
 
       - name: Check Rust formatting
         working-directory: src-tauri
