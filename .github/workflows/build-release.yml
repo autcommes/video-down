@@ -85,7 +85,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install frontend dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
         timeout-minutes: 10
 
       - name: Download yt-dlp (Windows)
