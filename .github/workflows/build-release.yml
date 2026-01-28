@@ -52,13 +52,6 @@ jobs:
         with:
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      - name: Setup Rust cache
-        if: runner.os != 'Windows'
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: src-tauri
-          cache-on-failure: true
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -83,7 +76,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install frontend dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
         timeout-minutes: 15
 
       - name: Download yt-dlp (Windows)

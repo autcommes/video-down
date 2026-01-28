@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import { vi } from 'vitest'
 import { logger } from '@/utils/logger'
 
 // 在测试环境中禁用日志输出到控制台
