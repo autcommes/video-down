@@ -1,0 +1,69 @@
+{
+  "git": {
+    "commitMessage": "chore: release v${version}",
+    "tagName": "v${version}",
+    "requireCleanWorkingDir": false,
+    "requireBranch": "master"
+  },
+  "github": {
+    "release": false,
+    "releaseName": "v${version}"
+  },
+  "npm": {
+    "publish": false
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": {
+        "name": "conventionalcommits",
+        "types": [
+          {
+            "type": "feat",
+            "section": "✨ 新功能"
+          },
+          {
+            "type": "fix",
+            "section": "🐛 Bug 修复"
+          },
+          {
+            "type": "perf",
+            "section": "⚡ 性能优化"
+          },
+          {
+            "type": "refactor",
+            "section": "♻️ 代码重构"
+          },
+          {
+            "type": "docs",
+            "section": "📝 文档"
+          },
+          {
+            "type": "style",
+            "section": "💄 样式"
+          },
+          {
+            "type": "test",
+            "section": "✅ 测试"
+          },
+          {
+            "type": "build",
+            "section": "📦 构建"
+          },
+          {
+            "type": "ci",
+            "section": "👷 CI/CD"
+          },
+          {
+            "type": "chore",
+            "section": "🔧 其他"
+          }
+        ]
+      },
+      "infile": "CHANGELOG.md",
+      "header": "# 更新日志\n\n所有重要的变更都会记录在这个文件中。\n"
+    }
+  },
+  "hooks": {
+    "before:init": ["pnpm test", "pnpm lint"]
+  }
+}
