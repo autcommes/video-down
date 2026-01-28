@@ -1,6 +1,5 @@
 use crate::error::AppError;
 use crate::models::UpdateInfo;
-use reqwest;
 use serde::Deserialize;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -69,7 +68,7 @@ impl UpdateService {
 
         if !response.status().is_success() {
             return Err(AppError::NetworkError(
-                reqwest::Error::from(response.error_for_status().unwrap_err())
+                response.error_for_status().unwrap_err()
             ));
         }
 
@@ -148,7 +147,7 @@ impl UpdateService {
 
         if !response.status().is_success() {
             return Err(AppError::NetworkError(
-                reqwest::Error::from(response.error_for_status().unwrap_err())
+                response.error_for_status().unwrap_err()
             ));
         }
 

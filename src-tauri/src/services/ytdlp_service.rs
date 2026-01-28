@@ -46,7 +46,7 @@ impl YtdlpService {
             
             // 3. 如果还没找到，检查程序所在目录（发布环境）
             if found_path.is_none() {
-                if let Some(exe_path) = std::env::current_exe().ok() {
+                if let Ok(exe_path) = std::env::current_exe() {
                     if let Some(exe_dir) = exe_path.parent() {
                         let local_path = exe_dir.join("yt-dlp.exe");
                         eprintln!("检查程序目录: {:?}", local_path);

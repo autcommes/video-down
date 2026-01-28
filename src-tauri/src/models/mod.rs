@@ -9,6 +9,8 @@ mod update;
 
 pub use video_info::{VideoInfo, Format};
 pub use progress::ProgressData;
-pub use config::{AppConfig, BrowserType};
+pub use config::AppConfig;
+#[cfg(test)]
+pub use config::BrowserType;
 pub use history::HistoryItem;
 pub use update::UpdateInfo;

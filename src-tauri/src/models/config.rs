@@ -1,21 +1,16 @@
 use serde::{Deserialize, Serialize};
 
 /// 浏览器类型（用于读取 Cookie）
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Default)]
 #[serde(rename_all = "lowercase")]
 pub enum BrowserType {
+    #[default]
     None,
     Chrome,
     Edge,
     Firefox,
     Brave,
     Opera,
-}
-
-impl Default for BrowserType {
-    fn default() -> Self {
-        BrowserType::None
-    }
 }
 
 /// 应用配置
