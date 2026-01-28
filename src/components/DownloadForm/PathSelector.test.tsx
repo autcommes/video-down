@@ -22,9 +22,9 @@ describe('PathSelector', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useConfigStore as any).mockReturnValue({
+    vi.mocked(useConfigStore).mockReturnValue({
       updateSavePath: mockUpdateSavePath,
-    });
+    } as ReturnType<typeof useConfigStore>);
   });
 
   it('应该渲染路径输入框和浏览按钮', () => {
@@ -44,7 +44,7 @@ describe('PathSelector', () => {
 
   it('应该在点击浏览按钮时打开文件夹选择对话框', async () => {
     const selectedPath = 'C:\\Users\\Test\\Videos';
-    (fileSystemApi.selectFolder as any).mockResolvedValue(selectedPath);
+    vi.mocked(fileSystemApi.selectFolder).mockResolvedValue(selectedPath);
 
     render(<PathSelector onChange={mockOnChange} />);
 
@@ -58,7 +58,7 @@ describe('PathSelector', () => {
 
   it('应该在选择文件夹后调用 onChange', async () => {
     const selectedPath = 'C:\\Users\\Test\\Videos';
-    (fileSystemApi.selectFolder as any).mockResolvedValue(selectedPath);
+    vi.mocked(fileSystemApi.selectFolder).mockResolvedValue(selectedPath);
 
     render(<PathSelector onChange={mockOnChange} />);
 
@@ -72,7 +72,7 @@ describe('PathSelector', () => {
 
   it('应该在选择文件夹后保存到配置', async () => {
     const selectedPath = 'C:\\Users\\Test\\Videos';
-    (fileSystemApi.selectFolder as any).mockResolvedValue(selectedPath);
+    vi.mocked(fileSystemApi.selectFolder).mockResolvedValue(selectedPath);
 
     render(<PathSelector onChange={mockOnChange} />);
 
@@ -85,7 +85,7 @@ describe('PathSelector', () => {
   });
 
   it('应该在用户取消选择时不调用 onChange', async () => {
-    (fileSystemApi.selectFolder as any).mockResolvedValue(null);
+    vi.mocked(fileSystemApi.selectFolder).mockResolvedValue(null);
 
     render(<PathSelector onChange={mockOnChange} />);
 
@@ -101,7 +101,7 @@ describe('PathSelector', () => {
 
   it('应该在选择文件夹失败时显示错误信息', async () => {
     const errorMessage = '无法访问文件系统';
-    (fileSystemApi.selectFolder as any).mockRejectedValue(
+    vi.mocked(fileSystemApi.selectFolder).mockRejectedValue(
       new Error(errorMessage)
     );
 
@@ -159,7 +159,7 @@ describe('PathSelector', () => {
     const selectPromise = new Promise<string>((resolve) => {
       resolveSelect = resolve;
     });
-    (fileSystemApi.selectFolder as any).mockReturnValue(selectPromise);
+    vi.mocked(fileSystemApi.selectFolder).mockReturnValue(selectPromise);
 
     render(<PathSelector onChange={mockOnChange} />);
 

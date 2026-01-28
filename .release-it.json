@@ -63,5 +63,7 @@
       "header": "# 更新日志\n\n所有重要的变更都会记录在这个文件中。\n"
     }
   },
-  "hooks": {}
+  "hooks": {
+    "before:init": ["pnpm lint"]
+  }
 }

@@ -58,7 +58,7 @@ export function DownloadForm() {
     if (config.savePath && !savePath) {
       setSavePath(config.savePath);
     }
-  }, [config.savePath]);
+  }, [config.savePath, savePath]);
 
   /**
    * 处理 URL 提交

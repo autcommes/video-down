@@ -101,7 +101,7 @@ export function PathSelector({
     if (value && error) {
       setError('');
     }
-  }, [value]);
+  }, [value, error]);
 
   return (
     <div className="space-y-2">

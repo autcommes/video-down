@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import {
   Select,
   SelectContent,
@@ -99,7 +99,7 @@ export function ResolutionSelect({
    * 需求：2.3 - 默认分辨率选择正确性
    * 优先选择 1080p，如果不存在则选择最接近的分辨率
    */
-  const selectDefaultResolution = (): string | undefined => {
+  const selectDefaultResolution = useCallback((): string | undefined => {
     if (sortedFormats.length === 0) return undefined;
 
     // 查找 1080p
@@ -127,7 +127,7 @@ export function ResolutionSelect({
     }
 
     return closest.formatId;
-  };
+  }, [sortedFormats]);
 
   /**
    * 当格式列表变化且没有选中值时，自动选择默认分辨率
@@ -139,7 +139,7 @@ export function ResolutionSelect({
         onChange(defaultFormat);
       }
     }
-  }, [formats, value, onChange]);
+  }, [formats, value, onChange, selectDefaultResolution]);
 
   if (formats.length === 0) {
     return (

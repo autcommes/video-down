@@ -53,11 +53,12 @@ describe('App', () => {
       loadConfig: mockLoadConfig,
     });
 
+    // 使用类型断言而不是 any
     vi.mocked(downloadStore.useDownloadStore).mockImplementation(
-      mockUseDownloadStore as any
+      mockUseDownloadStore as typeof downloadStore.useDownloadStore
     );
     vi.mocked(configStore.useConfigStore).mockImplementation(
-      mockUseConfigStore as any
+      mockUseConfigStore as typeof configStore.useConfigStore
     );
   });
 

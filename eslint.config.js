@@ -20,6 +20,7 @@ export default [
         },
       },
       globals: {
+        // 浏览器全局对象
         window: 'readonly',
         document: 'readonly',
         navigator: 'readonly',
@@ -30,6 +31,20 @@ export default [
         clearInterval: 'readonly',
         fetch: 'readonly',
         Promise: 'readonly',
+        alert: 'readonly',
+        confirm: 'readonly',
+        Blob: 'readonly',
+        URL: 'readonly',
+        // HTML 元素类型
+        HTMLElement: 'readonly',
+        HTMLDivElement: 'readonly',
+        HTMLInputElement: 'readonly',
+        HTMLButtonElement: 'readonly',
+        HTMLFormElement: 'readonly',
+        // Node.js 全局对象
+        NodeJS: 'readonly',
+        process: 'readonly',
+        __dirname: 'readonly',
       },
     },
     plugins: {
@@ -49,6 +64,13 @@ export default [
         'warn',
         { argsIgnorePattern: '^_' },
       ],
+    },
+  },
+  // UI 组件特殊规则
+  {
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
     },
   },
 ];
