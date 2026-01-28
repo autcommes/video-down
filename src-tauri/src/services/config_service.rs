@@ -166,7 +166,7 @@ mod tests {
             default_resolution: "720p".to_string(),
             auto_check_update: false,
             concurrent_downloads: 5,
-            youtube_cookie_browser: crate::models::config::BrowserType::None,
+            youtube_cookie_browser: crate::models::BrowserType::None,
         };
         
         // 保存配置
@@ -206,7 +206,7 @@ mod tests {
             default_resolution: "1080p".to_string(),
             auto_check_update: true,
             concurrent_downloads: 3,
-            youtube_cookie_browser: crate::models::config::BrowserType::None,
+            youtube_cookie_browser: crate::models::BrowserType::None,
         };
         
         let config2 = AppConfig {
@@ -214,7 +214,7 @@ mod tests {
             default_resolution: "720p".to_string(),
             auto_check_update: false,
             concurrent_downloads: 5,
-            youtube_cookie_browser: crate::models::config::BrowserType::None,
+            youtube_cookie_browser: crate::models::BrowserType::None,
         };
         
         // 保存第一个配置
@@ -242,7 +242,7 @@ mod tests {
             default_resolution: "1080p".to_string(),
             auto_check_update: true,
             concurrent_downloads: 3,
-            youtube_cookie_browser: crate::models::config::BrowserType::None,
+            youtube_cookie_browser: crate::models::BrowserType::None,
         };
         
         service.save(&config).unwrap();
