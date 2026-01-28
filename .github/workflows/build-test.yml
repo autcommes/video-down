@@ -13,6 +13,7 @@ jobs:
   test:
     name: Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
     
     strategy:
       matrix:
@@ -34,6 +35,13 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+        timeout-minutes: 10
+
+      - name: Setup Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+          cache-on-failure: true
 
       - name: Install dependencies (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
@@ -55,22 +63,28 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install frontend dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+        timeout-minutes: 10
 
       - name: Run frontend tests
         run: pnpm test
+        timeout-minutes: 10
 
       - name: Run frontend linter
         run: pnpm lint
+        timeout-minutes: 5
 
       - name: Run Rust tests
         working-directory: src-tauri
         run: cargo test
+        timeout-minutes: 15
 
       - name: Run Rust clippy
         working-directory: src-tauri
         run: cargo clippy -- -D warnings
+        timeout-minutes: 10
 
       - name: Check Rust formatting
         working-directory: src-tauri
         run: cargo fmt -- --check
+        timeout-minutes: 5
