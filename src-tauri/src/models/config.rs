@@ -108,6 +108,7 @@ mod tests {
                     default_resolution,
                     auto_check_update,
                     concurrent_downloads,
+                    youtube_cookie_browser: BrowserType::None,
                 };
                 
                 // 序列化为 JSON
