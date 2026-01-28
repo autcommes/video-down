@@ -31,6 +31,14 @@ export interface LogEntry {
 class Logger {
   private logs: LogEntry[] = [];
   private maxLogs = 1000; // 最多保存 1000 条日志
+  private silent = false; // 是否静默模式（不输出到控制台）
+
+  /**
+   * 设置静默模式
+   */
+  setSilent(silent: boolean) {
+    this.silent = silent;
+  }
 
   /**
    * 记录日志
@@ -50,6 +58,11 @@ class Logger {
     // 限制日志数量
     if (this.logs.length > this.maxLogs) {
       this.logs.shift();
+    }
+
+    // 在测试环境或静默模式下不输出到控制台
+    if (this.silent || import.meta.env?.MODE === 'test') {
+      return;
     }
 
     // 输出到控制台
