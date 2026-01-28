@@ -13,6 +13,26 @@ import { TaskStatus } from './types';
 vi.mock('./store/downloadStore');
 vi.mock('./store/configStore');
 
+// Mock Tauri API
+vi.mock('./services/tauriApi', () => ({
+  tauriApi: {
+    download: {
+      startDownload: vi.fn(),
+      cancelDownload: vi.fn(),
+    },
+    event: {
+      onDownloadProgress: vi.fn(() => Promise.resolve(() => {})),
+      onDownloadComplete: vi.fn(() => Promise.resolve(() => {})),
+      onDownloadError: vi.fn(() => Promise.resolve(() => {})),
+    },
+  },
+  eventApi: {
+    onDownloadProgress: vi.fn(() => Promise.resolve(() => {})),
+    onDownloadComplete: vi.fn(() => Promise.resolve(() => {})),
+    onDownloadError: vi.fn(() => Promise.resolve(() => {})),
+  },
+}));
+
 // Mock components
 vi.mock('./components/DownloadForm', () => ({
   DownloadForm: () => <div data-testid="download-form">DownloadForm</div>,

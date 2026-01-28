@@ -2,11 +2,14 @@
  * VersionInfo 组件单元测试
  */
 
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, afterEach } from 'vitest';
+import { render, screen, cleanup } from '@testing-library/react';
 import { VersionInfo } from './VersionInfo';
 
 describe('VersionInfo', () => {
+  afterEach(() => {
+    cleanup();
+  });
   it('应该正确显示当前版本', () => {
     render(
       <VersionInfo

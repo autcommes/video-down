@@ -2,8 +2,8 @@
  * HistoryList 组件单元测试
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import { HistoryList } from './HistoryList';
 import { useHistoryStore } from '@/store/historyStore';
 import type { HistoryItem } from '@/types';
@@ -56,6 +56,10 @@ describe('HistoryList', () => {
       updateFileExists: vi.fn(),
       refreshFileExistence: vi.fn(),
     });
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   it('应该在挂载时加载历史记录', () => {
