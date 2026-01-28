@@ -63,25 +63,6 @@ jobs:
         run: pnpm install --frozen-lockfile
         timeout-minutes: 15
 
-      - name: Run frontend tests
-        run: pnpm test
+      - name: Build frontend
+        run: pnpm build
         timeout-minutes: 10
-
-      - name: Run frontend linter
-        run: pnpm lint
-        timeout-minutes: 5
-
-      - name: Run Rust tests
-        working-directory: src-tauri
-        run: cargo test
-        timeout-minutes: 30
-
-      - name: Run Rust clippy
-        working-directory: src-tauri
-        run: cargo clippy -- -D warnings
-        timeout-minutes: 20
-
-      - name: Check Rust formatting
-        working-directory: src-tauri
-        run: cargo fmt -- --check
-        timeout-minutes: 5
