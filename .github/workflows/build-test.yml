@@ -31,7 +31,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 9
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -65,7 +65,17 @@ jobs:
 
       - name: Install frontend dependencies
         run: pnpm install --no-frozen-lockfile
-        timeout-minutes: 10
+        timeout-minutes: 15
+        continue-on-error: false
+
+      - name: Retry install if failed (Windows)
+        if: failure() && matrix.os == 'windows-latest'
+        run: |
+          Write-Host "First install failed, retrying..."
+          pnpm store prune
+          pnpm install --no-frozen-lockfile --force
+        timeout-minutes: 15
+        shell: pwsh
 
       - name: Run frontend tests
         run: pnpm test
