@@ -2,8 +2,8 @@
  * UpdatePanel 组件单元测试
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import { UpdatePanel } from './UpdatePanel';
 import { tauriApi } from '@/services/tauriApi';
 import type { UpdateInfo } from '@/types';
@@ -44,6 +44,10 @@ describe('UpdatePanel', () => {
     
     // 默认返回当前版本
     vi.mocked(tauriApi.update.getYtdlpVersion).mockResolvedValue('2024.01.10');
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   it('应该在挂载时获取当前版本', async () => {
