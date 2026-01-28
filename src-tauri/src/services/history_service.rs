@@ -269,8 +269,8 @@ mod tests {
         
         assert_eq!(items.len(), 2);
         // 最新的在前面（item2）
-        assert_eq!(items[0].file_exists, false); // 不存在的文件
-        assert_eq!(items[1].file_exists, true);  // 存在的文件
+        assert!(!items[0].file_exists); // 不存在的文件
+        assert!(items[1].file_exists);  // 存在的文件
     }
     
     #[test]

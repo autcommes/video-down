@@ -134,7 +134,7 @@ mod tests {
         let temp_dir = TempDir::new().unwrap();
         let service = ConfigService::new(temp_dir.path()).unwrap();
         
-        assert!(service.config_path().exists() == false);
+        assert!(!service.config_path().exists());
         assert_eq!(
             service.config_path(),
             temp_dir.path().join("config.json")

@@ -56,7 +56,7 @@ mod tests {
     fn test_app_config_default() {
         let config = AppConfig::default();
         assert_eq!(config.default_resolution, "1080p");
-        assert_eq!(config.auto_check_update, true);
+        assert!(config.auto_check_update);
         assert_eq!(config.concurrent_downloads, 3);
     }
 

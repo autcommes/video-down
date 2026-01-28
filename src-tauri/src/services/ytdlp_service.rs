@@ -703,11 +703,9 @@ mod tests {
         match result {
             Ok(_) => {
                 // yt-dlp 已安装，测试通过
-                assert!(true);
             }
             Err(AppError::YtdlpNotFound) => {
                 // yt-dlp 未安装，这也是预期的行为
-                assert!(true);
             }
             Err(e) => {
                 // 其他错误，测试失败

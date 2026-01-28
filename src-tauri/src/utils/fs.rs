@@ -285,12 +285,10 @@ mod tests {
                 for i in 0..num_conflicts {
                     let conflict_name = if i == 0 {
                         filename.clone()
+                    } else if let Some(ext) = &extension {
+                        format!("{}_{}.{}", base_name, i, ext)
                     } else {
-                        if let Some(ext) = &extension {
-                            format!("{}_{}.{}", base_name, i, ext)
-                        } else {
-                            format!("{}_{}", base_name, i)
-                        }
+                        format!("{}_{}", base_name, i)
                     };
                     
                     let conflict_path = temp_dir.path().join(&conflict_name);
@@ -313,11 +311,7 @@ mod tests {
                 );
                 
                 // 属性 2：新文件名应该保留原始文件名作为前缀
-                let expected_prefix = if extension.is_some() {
-                    base_name.as_str()
-                } else {
-                    base_name.as_str()
-                };
+                let expected_prefix = base_name.as_str();
                 prop_assert!(
                     new_filename.starts_with(expected_prefix),
                     "新文件名 '{}' 应该以原始文件名 '{}' 开头",
@@ -607,7 +601,7 @@ mod tests {
                 let components: Vec<_> = normalized.components().collect();
                 // 注意：在某些 CI 环境中，路径可能更短
                 prop_assert!(
-                    components.len() >= 1,
+                    !components.is_empty(),
                     "路径应该至少包含根组件"
                 );
                 
