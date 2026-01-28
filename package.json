@@ -17,6 +17,7 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css}\"",
     "test": "vitest --run",
     "test:watch": "vitest",
+    "setup:hooks": "powershell -ExecutionPolicy Bypass -File ./scripts/setup-git-hooks.ps1",
     "release": "release-it",
     "release:minor": "release-it minor",
     "release:major": "release-it major",
