@@ -37,19 +37,12 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
-        timeout-minutes: 20
 
       - name: Setup Rust cache
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
           cache-on-failure: true
-          # 只缓存必要的目录，减小缓存大小
-          cache-targets: true
-          cache-all-crates: false
-          # 增加保存和恢复缓存的超时时间
-          save-if: ${{ github.ref == 'refs/heads/master' }}
-        timeout-minutes: 10
 
       - name: Install dependencies (Ubuntu)
         if: matrix.os == 'ubuntu-latest'

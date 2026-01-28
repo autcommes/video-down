@@ -6,42 +6,57 @@ on:
       - 'v*' # 当推送 v* 标签时触发（如 v1.0.0）
   workflow_dispatch: # 允许手动触发
 
-env:
-  CARGO_TERM_COLOR: always
-
 jobs:
-  build:
-    name: Build ${{ matrix.platform }}
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
-    
+  release:
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
         include:
           # Windows
-          - platform: windows-x86_64
-            os: windows-latest
-            target: x86_64-pc-windows-msvc
-            
+          - platform: 'windows-latest'
+            args: ''
+          
           # macOS Intel
-          - platform: macos-x86_64
-            os: macos-latest
-            target: x86_64-apple-darwin
-            
+          - platform: 'macos-latest'
+            args: '--target x86_64-apple-darwin'
+          
           # macOS Apple Silicon
-          - platform: macos-aarch64
-            os: macos-latest
-            target: aarch64-apple-darwin
-            
+          - platform: 'macos-latest'
+            args: '--target aarch64-apple-darwin'
+          
+          # macOS Universal
+          - platform: 'macos-latest'
+            args: '--target universal-apple-darwin'
+          
           # Linux
-          - platform: linux-x86_64
-            os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
+          - platform: 'ubuntu-latest'
+            args: ''
+
+    runs-on: ${{ matrix.platform }}
+    timeout-minutes: 60
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Install dependencies (Linux)
+        if: startsWith(matrix.platform, 'ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: Setup Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+          cache-on-failure: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -52,31 +67,6 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 8
-
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.target }}
-          components: rustfmt, clippy
-        timeout-minutes: 20
-
-      - name: Setup Rust cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: src-tauri
-          cache-on-failure: true
-          # 只缓存必要的目录，减小缓存大小
-          cache-targets: true
-          cache-all-crates: false
-          # 增加保存和恢复缓存的超时时间
-          save-if: ${{ github.ref == 'refs/heads/master' }}
-        timeout-minutes: 10
-
-      - name: Install dependencies (Ubuntu)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
       - name: Get pnpm store directory
         shell: bash
@@ -93,10 +83,9 @@ jobs:
 
       - name: Install frontend dependencies
         run: pnpm install --no-frozen-lockfile
-        timeout-minutes: 10
 
       - name: Download yt-dlp (Windows)
-        if: matrix.os == 'windows-latest'
+        if: matrix.platform == 'windows-latest'
         shell: pwsh
         run: |
           $ytdlpUrl = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"
@@ -106,118 +95,28 @@ jobs:
           Write-Host "yt-dlp downloaded successfully"
 
       - name: Download yt-dlp (macOS)
-        if: matrix.os == 'macos-latest'
+        if: matrix.platform == 'macos-latest'
         run: |
           curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o src-tauri/resources/yt-dlp
           chmod +x src-tauri/resources/yt-dlp
 
       - name: Download yt-dlp (Linux)
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.platform == 'ubuntu-latest'
         run: |
           curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o src-tauri/resources/yt-dlp
           chmod +x src-tauri/resources/yt-dlp
 
-      - name: Build Tauri app
-        run: pnpm tauri build --target ${{ matrix.target }}
-        timeout-minutes: 30
-
-      - name: Prepare artifacts (Windows)
-        if: matrix.os == 'windows-latest'
-        shell: pwsh
-        run: |
-          # 创建发布目录
-          New-Item -ItemType Directory -Force -Path "release-artifacts"
-          
-          # 复制 MSI 安装包
-          $msiPath = Get-ChildItem -Path "src-tauri/target/${{ matrix.target }}/release/bundle/msi" -Filter "*.msi" | Select-Object -First 1
-          if ($msiPath) {
-            Copy-Item $msiPath.FullName "release-artifacts/video-downloader-${{ matrix.platform }}.msi"
-          }
-          
-          # 复制 NSIS 安装包
-          $nsisPath = Get-ChildItem -Path "src-tauri/target/${{ matrix.target }}/release/bundle/nsis" -Filter "*.exe" | Select-Object -First 1
-          if ($nsisPath) {
-            Copy-Item $nsisPath.FullName "release-artifacts/video-downloader-${{ matrix.platform }}-setup.exe"
-          }
-          
-          # 创建绿色版便携包
-          New-Item -ItemType Directory -Force -Path "portable"
-          Copy-Item "src-tauri/target/${{ matrix.target }}/release/video-downloader.exe" "portable/"
-          Copy-Item "src-tauri/resources/yt-dlp.exe" "portable/"
-          Copy-Item "portable-release/使用说明.txt" "portable/" -ErrorAction SilentlyContinue
-          Copy-Item "portable-release/故障排除.txt" "portable/" -ErrorAction SilentlyContinue
-          Copy-Item "portable-release/测试链接.txt" "portable/" -ErrorAction SilentlyContinue
-          
-          # 压缩便携包
-          Compress-Archive -Path "portable/*" -DestinationPath "release-artifacts/video-downloader-${{ matrix.platform }}-portable.zip"
-
-      - name: Prepare artifacts (macOS)
-        if: matrix.os == 'macos-latest'
-        run: |
-          mkdir -p release-artifacts
-          
-          # 复制 DMG
-          find src-tauri/target/${{ matrix.target }}/release/bundle/dmg -name "*.dmg" -exec cp {} release-artifacts/video-downloader-${{ matrix.platform }}.dmg \;
-          
-          # 创建便携包
-          mkdir -p portable
-          find src-tauri/target/${{ matrix.target }}/release/bundle/macos -name "*.app" -exec cp -r {} portable/ \;
-          cp src-tauri/resources/yt-dlp portable/ || true
-          
-          # 压缩便携包
-          cd portable && zip -r ../release-artifacts/video-downloader-${{ matrix.platform }}-portable.zip . && cd ..
-
-      - name: Prepare artifacts (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          mkdir -p release-artifacts
-          
-          # 复制 DEB
-          find src-tauri/target/${{ matrix.target }}/release/bundle/deb -name "*.deb" -exec cp {} release-artifacts/video-downloader-${{ matrix.platform }}.deb \;
-          
-          # 复制 AppImage
-          find src-tauri/target/${{ matrix.target }}/release/bundle/appimage -name "*.AppImage" -exec cp {} release-artifacts/video-downloader-${{ matrix.platform }}.AppImage \;
-          
-          # 创建便携包
-          mkdir -p portable
-          cp src-tauri/target/${{ matrix.target }}/release/video-downloader portable/
-          cp src-tauri/resources/yt-dlp portable/ || true
-          
-          # 压缩便携包
-          cd portable && tar -czf ../release-artifacts/video-downloader-${{ matrix.platform }}-portable.tar.gz . && cd ..
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ matrix.platform }}
-          path: release-artifacts/*
-          if-no-files-found: error
-
-  release:
-    name: Create Release
-    needs: build
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v3
-        with:
-          path: artifacts
-
-      - name: Display structure
-        run: ls -R artifacts
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          draft: false
-          prerelease: false
-          generate_release_notes: true
-          files: |
-            artifacts/**/*
+      - name: Build the app
+        uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: '视频下载工具 ${{ github.ref_name }}'
+          releaseBody: '查看资源以下载此版本并安装。'
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}
+          updaterJsonKeepUniversal: true
+          # 使用 pnpm 而不是 npm
+          tauriScript: pnpm tauri
