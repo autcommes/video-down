@@ -57,13 +57,15 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
-        timeout-minutes: 10
+          components: rustfmt, clippy
+        timeout-minutes: 20
 
       - name: Setup Rust cache
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
           cache-on-failure: true
+          shared-key: "rust-build"
 
       - name: Install dependencies (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
