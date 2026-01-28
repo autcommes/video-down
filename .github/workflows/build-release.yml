@@ -53,6 +53,7 @@ jobs:
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: Setup Rust cache
+        if: runner.os != 'Windows'
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri

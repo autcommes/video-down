@@ -39,6 +39,7 @@ jobs:
           components: rustfmt, clippy
 
       - name: Setup Rust cache
+        if: runner.os != 'Windows'
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
