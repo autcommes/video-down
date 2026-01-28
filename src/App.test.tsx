@@ -2,8 +2,8 @@
  * App 主应用组件测试
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, waitFor, cleanup } from '@testing-library/react';
 import App from './App';
 import * as downloadStore from './store/downloadStore';
 import * as configStore from './store/configStore';
@@ -80,6 +80,10 @@ describe('App', () => {
     vi.mocked(configStore.useConfigStore).mockImplementation(
       mockUseConfigStore as typeof configStore.useConfigStore
     );
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   it('应该在初始化时显示加载状态', () => {

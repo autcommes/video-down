@@ -1,9 +1,12 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { render, screen, waitFor, cleanup } from '@testing-library/react';
 import { ResolutionSelect } from './ResolutionSelect';
 import { Format } from '@/types';
 
 describe('ResolutionSelect', () => {
+  afterEach(() => {
+    cleanup();
+  });
   const mockFormats: Format[] = [
     {
       formatId: '137',

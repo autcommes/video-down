@@ -2,11 +2,14 @@
  * ProgressBar 组件单元测试
  */
 
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, afterEach } from 'vitest';
+import { render, screen, cleanup } from '@testing-library/react';
 import { ProgressBar } from './ProgressBar';
 
 describe('ProgressBar', () => {
+  afterEach(() => {
+    cleanup();
+  });
   it('应该渲染进度条', () => {
     render(<ProgressBar percent={50} />);
     

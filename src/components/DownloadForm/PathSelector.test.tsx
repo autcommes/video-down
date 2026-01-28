@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import { PathSelector } from './PathSelector';
 import { fileSystemApi } from '@/services/tauriApi';
 import { useConfigStore } from '@/store/configStore';
@@ -25,6 +25,10 @@ describe('PathSelector', () => {
     vi.mocked(useConfigStore).mockReturnValue({
       updateSavePath: mockUpdateSavePath,
     } as ReturnType<typeof useConfigStore>);
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   it('应该渲染路径输入框和浏览按钮', () => {

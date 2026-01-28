@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import { DownloadForm } from './DownloadForm';
 import * as tauriApi from '@/services/tauriApi';
 import type { VideoInfo } from '@/types';
@@ -58,6 +58,10 @@ describe('DownloadForm', () => {
       autoCheckUpdate: true,
       concurrentDownloads: 3,
     });
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   it('应该渲染下载表单', () => {

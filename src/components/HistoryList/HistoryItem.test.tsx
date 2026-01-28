@@ -2,12 +2,15 @@
  * HistoryItem 组件单元测试
  */
 
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { HistoryItem } from './HistoryItem';
 import type { HistoryItem as HistoryItemType } from '@/types';
 
 describe('HistoryItem', () => {
+  afterEach(() => {
+    cleanup();
+  });
   const mockItem: HistoryItemType = {
     id: 'test-id-1',
     title: '测试视频标题',

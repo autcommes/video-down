@@ -2,11 +2,14 @@
  * ProgressInfo 组件单元测试
  */
 
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, afterEach } from 'vitest';
+import { render, screen, cleanup } from '@testing-library/react';
 import { ProgressInfo } from './ProgressInfo';
 
 describe('ProgressInfo', () => {
+  afterEach(() => {
+    cleanup();
+  });
   const mockProgressData = {
     speed: '2.5MB/s',
     downloaded: '125MB',
