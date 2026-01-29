@@ -3,6 +3,12 @@
 所有重要的变更都会记录在这个文件中。
 
 
+## [4.0.2](https://github.com/autcommes/video-down/compare/v4.0.0...v4.0.2) (2026-01-29)
+
+### 🐛 Bug 修复
+
+* 修复绿色版打包问题 ([aa709c8](https://github.com/autcommes/video-down/commit/aa709c8bc9586cafcb55b6eed91381c9a653e45d))
+
 ## [4.0.1](https://github.com/autcommes/video-down/compare/v4.0.0...v4.0.1) (2026-01-29)
 
 ## [4.0.0](https://github.com/autcommes/video-down/compare/v3.0.0...v4.0.0) (2026-01-29)
