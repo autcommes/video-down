@@ -3,6 +3,16 @@
 所有重要的变更都会记录在这个文件中。
 
 
+## [4.0.3](https://github.com/autcommes/video-down/compare/v4.0.2...v4.0.3) (2026-01-29)
+
+### 🐛 Bug 修复
+
+* 避免 release 提交触发重复的构建工作流 ([4af1131](https://github.com/autcommes/video-down/commit/4af1131a397f06f5aa888d750cc7d293f1e6e0a5))
+
+### ♻️ 代码重构
+
+* 重构 CI/CD 工作流，遵循最佳实践 ([e05e83a](https://github.com/autcommes/video-down/commit/e05e83abdc487f5ce2a127e700b9a83083eea869))
+
 ## [4.0.2](https://github.com/autcommes/video-down/compare/v4.0.0...v4.0.2) (2026-01-29)
 
 ### 🐛 Bug 修复
