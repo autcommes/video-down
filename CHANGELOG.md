@@ -3,6 +3,8 @@
 所有重要的变更都会记录在这个文件中。
 
 
+## [4.0.1](https://github.com/autcommes/video-down/compare/v4.0.0...v4.0.1) (2026-01-29)
+
 ## [4.0.0](https://github.com/autcommes/video-down/compare/v3.0.0...v4.0.0) (2026-01-29)
 
 ### ✨ 新功能

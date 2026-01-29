@@ -91,8 +91,13 @@ jobs:
           # 创建绿色版目录
           mkdir -p portable-package
           
-          # 复制主程序
-          cp src-tauri/target/release/*.exe portable-package/ || true
+          # 查找并复制主程序（Tauri 构建后的 exe 在 bundle/nsis 目录中）
+          find src-tauri/target/release -name "*.exe" -not -path "*/bundle/*" -exec cp {} portable-package/ \; || true
+          
+          # 如果上面没找到，尝试从 bundle/nsis 目录复制
+          if [ ! -f portable-package/*.exe ]; then
+            cp src-tauri/target/release/bundle/nsis/*.exe portable-package/ 2>/dev/null || true
+          fi
           
           # 复制 yt-dlp
           cp src-tauri/resources/yt-dlp.exe portable-package/ || true
@@ -125,13 +130,13 @@ jobs:
           ls -lh portable-package/
 
       - name: Create portable zip
-        shell: bash
+        shell: pwsh
         run: |
-          cd portable-package
-          7z a -tzip "../youtube-downloader-tool-v${{ steps.version.outputs.version }}-windows-portable.zip" *
-          cd ..
-          echo "=== 压缩包信息 ==="
-          ls -lh *.zip
+          # 使用 PowerShell 的 Compress-Archive 命令
+          $version = node -p "require('./package.json').version"
+          Compress-Archive -Path portable-package\* -DestinationPath "youtube-downloader-tool-v$version-windows-portable.zip" -Force
+          Write-Host "=== 压缩包信息 ==="
+          Get-ChildItem *.zip | Format-Table Name, Length
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

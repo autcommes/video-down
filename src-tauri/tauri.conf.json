@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "视频下载工具",
-    "version": "4.0.0"
+    "version": "4.0.1"
   },
   "tauri": {
     "allowlist": {
