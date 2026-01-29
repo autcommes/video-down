@@ -1,6 +1,6 @@
 {
   "name": "youtube-downloader-tool",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "基于 Tauri + React 的视频下载工具",
   "type": "module",
   "packageManager": "pnpm@9.15.4",

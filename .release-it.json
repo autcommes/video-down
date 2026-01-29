@@ -10,7 +10,6 @@
   "github": {
     "release": true,
     "releaseName": "v${version}",
-    "releaseNotes": "node scripts/generate-release-notes.js",
     "draft": false,
     "preRelease": false
   },

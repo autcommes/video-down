@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "视频下载工具",
-    "version": "0.1.0"
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -26,7 +26,11 @@
         "createDir": true,
         "removeFile": true,
         "exists": true,
-        "scope": ["$APPDATA/*", "$DOWNLOAD/*", "$RESOURCE/*"]
+        "scope": [
+          "$APPDATA/*",
+          "$DOWNLOAD/*",
+          "$RESOURCE/*"
+        ]
       },
       "shell": {
         "all": false,
@@ -63,9 +67,17 @@
         "signingIdentity": null,
         "minimumSystemVersion": "10.13"
       },
-      "resources": ["resources/*"],
+      "resources": [
+        "resources/*"
+      ],
       "shortDescription": "视频下载工具 - 支持 YouTube 等 1000+ 网站",
-      "targets": ["msi", "nsis", "deb", "appimage", "dmg"],
+      "targets": [
+        "msi",
+        "nsis",
+        "deb",
+        "appimage",
+        "dmg"
+      ],
       "windows": {
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",
