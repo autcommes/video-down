@@ -123,13 +123,20 @@ jobs:
           ls -lh portable-package/
 
       - name: Create portable zip
-        shell: pwsh
+        shell: bash
         run: |
-          # 使用 PowerShell 的 Compress-Archive 命令
-          $version = node -p "require('./package.json').version"
-          Compress-Archive -Path portable-package\* -DestinationPath "youtube-downloader-tool-v$version-windows-portable.zip" -Force
-          Write-Host "=== 压缩包信息 ==="
-          Get-ChildItem *.zip | Format-Table Name, Length
+          VERSION="${{ steps.version.outputs.version }}"
+          ZIP_NAME="youtube-downloader-tool-v${VERSION}-windows-portable.zip"
+          
+          # 使用 7z 或 PowerShell 创建 zip
+          if command -v 7z &> /dev/null; then
+            7z a -tzip "$ZIP_NAME" ./portable-package/*
+          else
+            powershell -Command "Compress-Archive -Path portable-package\* -DestinationPath '$ZIP_NAME' -Force"
+          fi
+          
+          echo "=== 压缩包信息 ==="
+          ls -lh *.zip
 
       - name: Upload to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
