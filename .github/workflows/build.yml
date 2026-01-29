@@ -1,0 +1,94 @@
+name: Build
+
+# 构建验证工作流
+# 目的：验证代码在 CI 环境能成功构建
+# 触发：push 到 master 分支（排除 tag 和 release 提交）
+# 注意：不运行测试（本地 Git hooks 已覆盖）
+
+on:
+  push:
+    branches: [master, main]
+    tags-ignore: ['v*']
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build Windows App
+    runs-on: windows-latest
+    timeout-minutes: 60
+    # 跳过 release 提交，避免与 Release 工作流重复
+    if: "!contains(github.event.head_commit.message, 'release v')"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Setup Rust cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            src-tauri/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+        timeout-minutes: 15
+
+      - name: Build Tauri app
+        run: pnpm tauri build
+        timeout-minutes: 30
+
+      - name: List build outputs
+        shell: bash
+        run: |
+          echo "=== 构建产物 ==="
+          echo "MSI 安装包:"
+          ls -lh src-tauri/target/release/bundle/msi/ || echo "未找到"
+          echo ""
+          echo "NSIS 安装包:"
+          ls -lh src-tauri/target/release/bundle/nsis/ || echo "未找到"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build-${{ github.sha }}
+          path: |
+            src-tauri/target/release/bundle/msi/*.msi
+            src-tauri/target/release/bundle/nsis/*.exe
+          if-no-files-found: warn
+          retention-days: 7

@@ -1,242 +1,183 @@
 # GitHub Actions 工作流说明
 
-本项目包含两个 GitHub Actions 工作流，用于自动化构建和测试。
+本项目采用简洁的 CI/CD 流程设计，遵循最佳实践。
 
-## 📋 工作流列表
+## 工作流架构
 
-### 1. Build and Release (`build-release.yml`)
-
-**触发条件：**
-- 推送版本标签（如 `v1.0.0`）
-- 手动触发
-
-**功能：**
-- 自动构建所有平台的应用程序
-- 创建绿色版便携包
-- 自动创建 GitHub Release
-- 上传所有构建产物
-
-**支持的平台：**
-- ✅ Windows (x86_64)
-  - MSI 安装包
-  - NSIS 安装包
-  - 绿色版便携包 (ZIP)
-  
-- ✅ macOS (Intel)
-  - DMG 安装包
-  - 绿色版便携包 (ZIP)
-  
-- ✅ macOS (Apple Silicon)
-  - DMG 安装包
-  - 绿色版便携包 (ZIP)
-  
-- ✅ Linux (x86_64)
-  - DEB 安装包
-  - AppImage
-  - 绿色版便携包 (tar.gz)
-
-### 2. Build Test (`build-test.yml`)
-
-**触发条件：**
-- 推送到 main/master/develop 分支
-- Pull Request 到 main/master/develop 分支
-
-**功能：**
-- 运行前端测试
-- 运行前端 Linter
-- 运行 Rust 测试
-- 运行 Rust Clippy
-- 检查 Rust 代码格式
-
-**测试平台：**
-- Ubuntu Latest
-- Windows Latest
-- macOS Latest
-
-## 🚀 使用方法
-
-### 方法 1：创建 Release（推荐）
-
-1. **更新版本号**
-   
-   编辑 `src-tauri/Cargo.toml`：
-   ```toml
-   [package]
-   version = "1.0.0"  # 更新版本号
-   ```
-   
-   编辑 `src-tauri/tauri.conf.json`：
-   ```json
-   {
-     "package": {
-       "version": "1.0.0"  // 更新版本号
-     }
-   }
-   ```
-
-2. **提交更改**
-   ```bash
-   git add .
-   git commit -m "chore: bump version to 1.0.0"
-   git push
-   ```
-
-3. **创建并推送标签**
-   ```bash
-   git tag v1.0.0
-   git push origin v1.0.0
-   ```
-
-4. **等待构建完成**
-   - 访问 GitHub Actions 页面查看构建进度
-   - 构建完成后，会自动创建 Release
-   - 所有平台的安装包和便携包会自动上传
-
-### 方法 2：手动触发
-
-1. 访问 GitHub 仓库的 Actions 页面
-2. 选择 "Build and Release" 工作流
-3. 点击 "Run workflow" 按钮
-4. 选择分支并运行
-
-## 📦 构建产物说明
-
-### Windows
-
-| 文件名 | 类型 | 说明 |
-|--------|------|------|
-| `video-downloader-windows-x86_64.msi` | 安装包 | Windows Installer 安装包 |
-| `video-downloader-windows-x86_64-setup.exe` | 安装包 | NSIS 安装程序 |
-| `video-downloader-windows-x86_64-portable.zip` | 便携包 | 绿色版，解压即用 |
-
-**便携包内容：**
-- `video-downloader.exe` - 主程序
-- `yt-dlp.exe` - 下载引擎
-- `使用说明.txt` - 使用说明
-- `故障排除.txt` - 故障排除指南
-- `测试链接.txt` - 测试视频链接
-
-### macOS
-
-| 文件名 | 类型 | 说明 |
-|--------|------|------|
-| `video-downloader-macos-x86_64.dmg` | 安装包 | Intel Mac 安装包 |
-| `video-downloader-macos-aarch64.dmg` | 安装包 | Apple Silicon 安装包 |
-| `video-downloader-macos-*.zip` | 便携包 | 绿色版 |
-
-### Linux
-
-| 文件名 | 类型 | 说明 |
-|--------|------|------|
-| `video-downloader-linux-x86_64.deb` | 安装包 | Debian/Ubuntu 安装包 |
-| `video-downloader-linux-x86_64.AppImage` | 便携包 | AppImage 格式 |
-| `video-downloader-linux-x86_64-portable.tar.gz` | 便携包 | 压缩包格式 |
-
-## 🔧 工作流配置
-
-### 环境变量
-
-工作流会自动下载最新版本的 yt-dlp，无需手动配置。
-
-### 缓存
-
-工作流使用缓存来加速构建：
-- pnpm store 缓存
-- Rust 编译缓存（通过 Cargo）
-
-### 构建时间
-
-预计构建时间（所有平台）：
-- 首次构建：约 30-40 分钟
-- 后续构建（有缓存）：约 15-20 分钟
-
-## 🐛 故障排除
-
-### 构建失败
-
-1. **检查版本号**
-   - 确保 `Cargo.toml` 和 `tauri.conf.json` 中的版本号一致
-
-2. **检查依赖**
-   - 确保 `pnpm-lock.yaml` 已提交
-   - 确保 `Cargo.lock` 已提交
-
-3. **查看日志**
-   - 在 GitHub Actions 页面查看详细的构建日志
-   - 检查具体是哪个步骤失败
-
-### yt-dlp 下载失败
-
-如果 yt-dlp 下载失败，可以：
-1. 检查 GitHub API 限制
-2. 使用镜像地址
-3. 手动上传 yt-dlp 到仓库
-
-### 平台特定问题
-
-**Windows:**
-- 确保 Visual Studio Build Tools 已安装（GitHub Actions 已预装）
-
-**macOS:**
-- 确保 Xcode Command Line Tools 已安装（GitHub Actions 已预装）
-
-**Linux:**
-- 确保所有依赖库已安装（工作流会自动安装）
-
-## 📝 本地测试
-
-在推送到 GitHub 之前，可以本地测试构建：
-
-```bash
-# 安装依赖
-pnpm install
-
-# 下载 yt-dlp
-# Windows
-Invoke-WebRequest -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -OutFile "src-tauri/resources/yt-dlp.exe"
-
-# macOS/Linux
-curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o src-tauri/resources/yt-dlp
-chmod +x src-tauri/resources/yt-dlp
-
-# 构建
-pnpm tauri build
+```
+开发流程：
+本地开发 → Git Hooks (测试) → Push → Build (构建验证) → 通过
+                                                    ↓
+发布流程：                                          
+pnpm release → 创建 Tag → Release (完整构建+发布) → GitHub Release
 ```
 
-## 🔐 权限说明
+## 工作流列表
 
-工作流需要以下权限：
-- `contents: write` - 创建 Release
-- `GITHUB_TOKEN` - 自动提供，无需配置
+### 1. build.yml - 构建验证
 
-## 📚 相关文档
+**触发条件：**
+- Push 到 master/main 分支
+- 排除 tag 推送
+- 排除 release 提交（通过提交消息判断）
 
-- [Tauri 构建指南](https://tauri.app/v1/guides/building/)
+**职责：**
+- 验证代码在 CI 环境能成功构建
+- 不运行测试（本地 Git hooks 已覆盖）
+- 上传临时 artifacts（保留 7 天）
+
+**目的：**
+- 快速反馈构建问题
+- 提供临时下载链接
+
+**运行时间：** ~30-40 分钟
+
+---
+
+### 2. release.yml - 正式发布
+
+**触发条件：**
+- Push tag (v*)
+- 手动触发
+
+**职责：**
+- 完整构建 Tauri 应用
+- 打包 MSI 安装包
+- 打包 NSIS 安装包
+- 打包绿色免安装版（zip）
+- 创建 GitHub Release
+- 上传所有安装包到 Release
+
+**目的：**
+- 正式版本发布
+- 提供永久下载链接
+
+**运行时间：** ~30-40 分钟
+
+## 设计原则
+
+### 1. 职责单一
+每个工作流只做一件事，避免职责重叠。
+
+### 2. 避免重复
+- Build 工作流：只在开发时运行
+- Release 工作流：只在发布时运行
+- 不会同时触发多个构建
+
+### 3. 本地优先
+- 本地 Git hooks 运行所有测试
+- CI 只验证构建，不重复测试
+- 节省 CI 资源和时间
+
+### 4. 清晰的触发条件
+- 使用 `tags-ignore` 排除 tag
+- 使用提交消息判断排除 release 提交
+- 避免复杂的条件判断
+
+## 发布流程
+
+### 开发者操作
+
+```bash
+# 1. 本地开发和测试（Git hooks 自动运行测试）
+git add .
+git commit -m "feat: 新功能"
+
+# 2. 推送到 GitHub
+git push
+
+# 3. 触发 Build 工作流（自动）
+# - 验证构建成功
+# - 可以从 Actions 下载临时 artifacts
+
+# 4. 准备发布
+pnpm release:patch  # 或 minor/major
+
+# 5. 触发 Release 工作流（自动）
+# - 完整构建
+# - 创建 GitHub Release
+# - 上传所有安装包
+```
+
+### 用户下载
+
+用户可以从以下位置下载：
+
+1. **GitHub Releases**（推荐）
+   - 访问：https://github.com/autcommes/video-down/releases
+   - 下载：MSI、NSIS、绿色版 zip
+   - 永久保存
+
+2. **Actions Artifacts**（临时）
+   - 访问：https://github.com/autcommes/video-down/actions
+   - 下载：临时构建产物
+   - 保留 7 天
+
+## 工作流优化
+
+### 缓存策略
+- pnpm store 缓存（加速依赖安装）
+- Rust cargo 缓存（加速 Rust 编译）
+- 使用 `hashFiles` 确保缓存有效性
+
+### 超时设置
+- 整体超时：60 分钟
+- 依赖安装：15 分钟
+- Tauri 构建：30 分钟
+
+### 错误处理
+- 使用 `if-no-files-found: warn` 避免构建失败
+- 使用 `|| true` 处理可选步骤
+- 清晰的错误日志输出
+
+## 常见问题
+
+### Q: 为什么 CI 不运行测试？
+A: 本地 Git hooks 已经运行了所有测试，CI 重复运行会浪费时间和资源。
+
+### Q: 为什么有时会看到多个工作流运行？
+A: 如果看到多个工作流，说明触发条件有问题。正常情况下：
+- 普通提交：只触发 Build
+- 发布提交：不触发 Build（被排除）
+- Tag 推送：只触发 Release
+
+### Q: 如何手动触发工作流？
+A: 在 GitHub Actions 页面，选择工作流，点击 "Run workflow"。
+
+### Q: 构建失败怎么办？
+A: 
+1. 检查 Actions 日志
+2. 本地运行 `pnpm tauri build` 复现问题
+3. 修复后重新推送
+
+## 维护指南
+
+### 添加新平台支持
+
+如果需要支持 macOS 或 Linux：
+
+1. 在 `release.yml` 中添加 matrix 策略
+2. 为每个平台配置不同的构建步骤
+3. 更新绿色版打包逻辑
+
+### 修改触发条件
+
+如果需要修改触发条件：
+
+1. 编辑 `on:` 部分
+2. 确保不会与其他工作流冲突
+3. 测试新的触发逻辑
+
+### 优化构建时间
+
+如果构建时间过长：
+
+1. 检查缓存是否生效
+2. 考虑使用更快的 runner
+3. 优化依赖安装步骤
+
+## 参考资料
+
 - [GitHub Actions 文档](https://docs.github.com/en/actions)
-- [pnpm 文档](https://pnpm.io/)
-
-## 💡 最佳实践
-
-1. **版本管理**
-   - 使用语义化版本号（Semantic Versioning）
-   - 主版本号.次版本号.修订号（如 1.0.0）
-
-2. **发布流程**
-   - 在 develop 分支开发
-   - 合并到 master 分支
-   - 创建标签触发发布
-
-3. **测试**
-   - 每次 PR 都会自动运行测试
-   - 确保所有测试通过后再合并
-
-4. **文档**
-   - 每次发布都更新 CHANGELOG
-   - 在 Release Notes 中说明变更内容
-
-## 🎯 下一步
-
-1. 添加自动化测试覆盖率报告
-2. 添加代码签名（Windows 和 macOS）
-3. 添加自动更新功能
-4. 添加性能测试
+- [Tauri CI/CD 指南](https://tauri.app/v1/guides/building/cross-platform)
+- [pnpm CI 配置](https://pnpm.io/continuous-integration)
