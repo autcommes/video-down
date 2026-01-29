@@ -3,11 +3,16 @@
     "commitMessage": "chore: release v${version}",
     "tagName": "v${version}",
     "requireCleanWorkingDir": false,
-    "requireBranch": "master"
+    "requireBranch": "master",
+    "push": true,
+    "pushArgs": ["--follow-tags"]
   },
   "github": {
-    "release": false,
-    "releaseName": "v${version}"
+    "release": true,
+    "releaseName": "v${version}",
+    "releaseNotes": "node scripts/generate-release-notes.js",
+    "draft": false,
+    "preRelease": false
   },
   "npm": {
     "publish": false
@@ -64,6 +69,7 @@
     }
   },
   "hooks": {
-    "before:init": ["pnpm lint"]
+    "before:init": ["pnpm test:all"],
+    "after:bump": ["node scripts/sync-version.js"]
   }
 }
