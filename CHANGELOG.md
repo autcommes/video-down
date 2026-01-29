@@ -3,6 +3,26 @@
 所有重要的变更都会记录在这个文件中。
 
 
+## [4.0.6](https://github.com/autcommes/video-down/compare/v4.0.2...v4.0.6) (2026-01-29)
+
+### 🐛 Bug 修复
+
+* 避免 release 提交触发重复的构建工作流 ([4af1131](https://github.com/autcommes/video-down/commit/4af1131a397f06f5aa888d750cc7d293f1e6e0a5))
+* 使用 paths-ignore 彻底避免 release 提交触发 Build 工作流 ([b8b98fc](https://github.com/autcommes/video-down/commit/b8b98fcdd79b807a6b99c0036a7f72b87494c679))
+* 添加 Release 工作流的 contents write 权限 ([4063d3b](https://github.com/autcommes/video-down/commit/4063d3bc53bdee92755d3ddf08f93cc854feff96))
+* 修复 Release 工作流中绿色版 zip 文件名变量问题 ([2ac7a60](https://github.com/autcommes/video-down/commit/2ac7a60d3eb9e94b19caea2b15a80e21fbdc4d0a))
+
+### ♻️ 代码重构
+
+* 重构 CI/CD 工作流，遵循最佳实践 ([e05e83a](https://github.com/autcommes/video-down/commit/e05e83abdc487f5ce2a127e700b9a83083eea869))
+
+### 🔧 其他
+
+* 删除旧的 build-release.yml 工作流文件 ([6e95da4](https://github.com/autcommes/video-down/commit/6e95da4bd091266966c55f00473d8dd0bf281485))
+* release v4.0.3 ([1b636c1](https://github.com/autcommes/video-down/commit/1b636c1c2dc9cfeeccffb5dafcaff796b0f4b4f2))
+* release v4.0.4 ([8f8e03e](https://github.com/autcommes/video-down/commit/8f8e03e4c1ef143cea25633c7c62c206b3daaded))
+* release v4.0.5 ([92ab5b9](https://github.com/autcommes/video-down/commit/92ab5b9b3c3e87587ecf5c26a7d1d26687b7c48c))
+
 ## [4.0.5](https://github.com/autcommes/video-down/compare/v4.0.2...v4.0.5) (2026-01-29)
 
 ### 🐛 Bug 修复
