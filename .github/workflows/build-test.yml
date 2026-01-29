@@ -3,6 +3,8 @@ name: Build Test
 on:
   push:
     branches: [ main, master, develop ]
+    tags-ignore:
+      - 'v*'  # 标签推送时不运行，由 Release Build 处理
   pull_request:
     branches: [ main, master, develop ]
 

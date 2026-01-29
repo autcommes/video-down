@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   push:
     branches: [ master, main ]
+    tags-ignore:
+      - 'v*'  # 标签推送时不运行，由 Release Build 处理
     paths:
       - 'src/**'
       - 'src-tauri/**'
