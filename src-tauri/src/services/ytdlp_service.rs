@@ -1195,11 +1195,8 @@ mod tests {
         
         #[test]
         fn prop_default_resolution_selection_correctness(
-            // 生成随机的格式列表
-            formats in prop::collection::vec(
-                prop::string::string_regex("[0-9]+").unwrap(),  // format_id
-                1..15  // 生成 1-15 个格式
-            ),
+            // 生成随机数量的格式（1-14 个）
+            format_count in 1usize..15,
             // 随机决定是否包含 1080p
             include_1080p: bool,
         ) {
@@ -1240,12 +1237,12 @@ mod tests {
                 });
             }
 
-            // 添加其他随机分辨率的格式
-            for (i, format_id) in formats.iter().enumerate() {
+            // 添加其他随机分辨率的格式，使用唯一的 format_id
+            for i in 0..format_count {
                 let resolution = resolutions_without_1080p[i % resolutions_without_1080p.len()].to_string();
                 
                 format_list.push(Format {
-                    format_id: format_id.clone(),
+                    format_id: format!("format_{}", i),  // 使用唯一的 format_id
                     resolution,
                     ext: "mp4".to_string(),
                     filesize: None,
