@@ -3,6 +3,16 @@
 所有重要的变更都会记录在这个文件中。
 
 
+## [4.0.0](https://github.com/autcommes/video-down/compare/v3.0.0...v4.0.0) (2026-01-29)
+
+### ✨ 新功能
+
+* 添加 Windows 绿色免安装版支持 ([1b607ae](https://github.com/autcommes/video-down/commit/1b607aee87da7ee49f4e4e4d972f83a7f9c3c32c))
+
+### 🐛 Bug 修复
+
+* 优化工作流触发条件，避免重复构建 ([aee812d](https://github.com/autcommes/video-down/commit/aee812d92ee91c07e85281369024bc09d4b863f3))
+
 ## 3.0.0 (2026-01-29)
 
 ### ✨ 新功能
