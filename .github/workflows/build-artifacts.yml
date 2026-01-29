@@ -72,6 +72,62 @@ jobs:
         run: pnpm tauri build
         timeout-minutes: 30
 
+      - name: Get version from package.json
+        id: version
+        shell: bash
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Create portable package
+        shell: bash
+        run: |
+          # 创建绿色版目录
+          mkdir -p portable-package
+          
+          # 复制主程序
+          cp src-tauri/target/release/*.exe portable-package/ || true
+          
+          # 复制 yt-dlp
+          cp src-tauri/resources/yt-dlp.exe portable-package/ || true
+          
+          # 创建说明文件
+          cat > portable-package/README.txt << 'EOF'
+          YouTube 视频下载工具 - 绿色免安装版
+          ========================================
+          
+          使用说明：
+          1. 双击运行 youtube-downloader-tool.exe
+          2. 首次运行会自动创建配置文件
+          3. 所有配置和历史记录保存在用户目录下
+          
+          系统要求：
+          - Windows 10/11 (64位)
+          - WebView2 运行时（Windows 11 自带，Windows 10 可能需要安装）
+          
+          注意事项：
+          - 本程序为绿色版，可直接运行，无需安装
+          - 可以放在任意目录，建议放在非系统盘
+          - 删除整个文件夹即可完全卸载
+          
+          更多信息：
+          https://github.com/autcommes/video-down
+          EOF
+          
+          # 列出文件
+          echo "=== 绿色版文件列表 ==="
+          ls -lh portable-package/
+
+      - name: Create portable zip
+        shell: bash
+        run: |
+          cd portable-package
+          7z a -tzip "../youtube-downloader-tool-v${{ steps.version.outputs.version }}-windows-portable.zip" *
+          cd ..
+          echo "=== 压缩包信息 ==="
+          ls -lh *.zip
+
       - name: List build outputs
         shell: bash
         run: |
@@ -80,6 +136,9 @@ jobs:
           echo ""
           echo "=== NSIS 安装包 ==="
           ls -lh src-tauri/target/release/bundle/nsis/ || echo "未找到 NSIS 文件"
+          echo ""
+          echo "=== 绿色版压缩包 ==="
+          ls -lh *.zip || echo "未找到 ZIP 文件"
 
       - name: Upload MSI installer
         uses: actions/upload-artifact@v4
@@ -97,10 +156,10 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-      - name: Upload portable executable
+      - name: Upload portable package
         uses: actions/upload-artifact@v4
         with:
-          name: windows-portable
-          path: src-tauri/target/release/*.exe
+          name: windows-portable-zip
+          path: youtube-downloader-tool-v${{ steps.version.outputs.version }}-windows-portable.zip
           if-no-files-found: warn
           retention-days: 7
