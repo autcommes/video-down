@@ -20,6 +20,8 @@ jobs:
     name: Build Windows App
     runs-on: windows-latest
     timeout-minutes: 60
+    # 跳过 release 提交，避免与 Release Build 重复
+    if: "!contains(github.event.head_commit.message, 'release v')"
 
     steps:
       - name: Checkout repository
