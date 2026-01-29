@@ -9,6 +9,10 @@ on:
   push:
     branches: [master, main]
     tags-ignore: ['v*']
+    paths-ignore:
+      - 'CHANGELOG.md'
+      - 'package.json'
+      - 'src-tauri/tauri.conf.json'
   workflow_dispatch:
 
 env:
@@ -19,8 +23,6 @@ jobs:
     name: Build Windows App
     runs-on: windows-latest
     timeout-minutes: 60
-    # 跳过 release 提交，避免与 Release 工作流重复
-    if: "!contains(github.event.head_commit.message, 'release v')"
 
     steps:
       - name: Checkout repository
